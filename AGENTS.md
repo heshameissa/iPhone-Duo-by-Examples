@@ -33,7 +33,7 @@ xcrun simctl launch booted com.artemnovichkov.iPhoneDuoByExamples -example hinge
 
 The iPhone Duo simulator has two displays. Take screenshots with `xcrun simctl io <udid> screenshot --display=primary-1` for the inner display and `--display=primary` for the outer (cover) display; `xcrun simctl io <udid> enumerate` lists the screens. Usually only the active display has content (folded → outer, open → inner); a scene accessory, like the cover display accessory, also draws on the outer display while open. Pass the device UDID or name rather than `booted` when another simulator is running.
 
-Change the fold state with the `hinge` skill (`.agents/skills/hinge/scripts/hinge -d "iPhone Duo" 0|110|180`): 0 is folded, 180 is flat, and about 110 is book pose in landscape. Wait a few seconds after launching before taking a screenshot. Device-interaction sessions bind to the outer display, so taps don't reach the inner display. To try a state you can't reach by tapping, temporarily change the example's default state, rebuild, and revert it.
+Change the fold state with the `hinge` skill (`.agents/skills/hinge/scripts/hinge -d "iPhone Duo" 0|110|180`): 0 is folded, 180 is flat, and about 110 is book pose in landscape. Wait a few seconds after launching before taking a screenshot. With Xcode 27.3 on iOS 27.3, device-interaction taps reach the inner display while the device is open. To try a state you can't reach by tapping, temporarily change the example's default state, rebuild, and revert it.
 
 The app restores open windows on launch, including windows opened with `openWindow`. If a launch shows the wrong window, reinstall the app (`xcrun simctl uninstall`, then `install`).
 
