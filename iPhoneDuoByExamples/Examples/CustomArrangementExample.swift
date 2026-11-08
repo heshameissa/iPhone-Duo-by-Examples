@@ -58,31 +58,37 @@ struct FoldArrangementStyle: ArrangementViewStyle {
     // 👇 The API: lay out the primary and secondary views yourself.
     func makeBody(configuration: Configuration) -> some View {
         GeometryReader { proxy in
-            let fold = proxy.reservedRegions(kind: .division, options: [.includeInactive]).first?.frame
+            let fold = proxy.reservedRegions(kind: .division, options: [.includeInactive]).first?
+                .frame
 
             if let fold, fold.height >= fold.width {
                 // A vertical fold: one view on each side, the fold's frame as the gap.
                 HStack(spacing: 0) {
-                    configuration.primary
-                        .frame(width: max(fold.minX, 0))
-                    Spacer(minLength: fold.width)
                     configuration.secondary
-                        .frame(width: max(proxy.size.width - fold.maxX, 0))
+                        .frame(maxWidth: max(fold.minX, 0))
+                        .contentMargins(for: .container, edges: .horizontal)
+                    Spacer(minLength: fold.width)
+                    configuration.primary
+                        .frame(maxWidth: max(proxy.size.width - fold.maxX, 0))
+                        .contentMargins(for: .container, edges: .horizontal)
                 }
             } else if let fold {
                 // A horizontal fold: primary above, secondary below.
                 VStack(spacing: 0) {
                     configuration.primary
-                        .frame(height: max(fold.minY, 0))
-                    Spacer(minLength: fold.height)
-                    configuration.secondary
-                        .frame(height: max(proxy.size.height - fold.maxY, 0))
+                        .frame(height: proxy.size.height)
+                        .contentMargins(for: .container, edges: .horizontal)
+                    // .frame(height: max(fold.minY, 0))
+                    // Spacer(minLength: fold.height)
+                    // configuration.secondary
+                    //     .frame(height: max(proxy.size.height - fold.maxY, 0))
                 }
             } else {
                 VStack(spacing: 0) {
                     configuration.primary
-                        .frame(height: proxy.size.height * stackedPrimaryRatio)
-                    configuration.secondary
+                        .frame(height: proxy.size.height)
+                        .contentMargins(for: .container, edges: .horizontal)
+                    // configuration.secondary
                 }
             }
         }
@@ -122,10 +128,10 @@ private struct Pane: View {
             content(showsIcon: false)
         }
         .foregroundStyle(.white)
-        .padding()
+        // .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(color.gradient, in: .rect(cornerRadius: 28))
-        .padding(6)
+        // .padding(6)
     }
 
     private func content(showsIcon: Bool) -> some View {
